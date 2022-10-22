@@ -11,9 +11,10 @@ scanf("%f", &a);
 printf("val b:\n");
 scanf("%f", &b);
 
-printf("for a^b, z -> p\n);
+printf("z: +, -, *, /\n");
+printf("for a^b, z -> p\n");
 printf("for square root of a, z -> s\n");
-printf("for log10 of a, z -> l\n);
+printf("for log10 of a, z -> l\n");
 printf("for cos of a, z -> c\n");
 
 printf("Podaj znak operacji:\n");
