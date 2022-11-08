@@ -1,21 +1,25 @@
 #include <stdio.h>
 
-int main()
-{
-
-int n;
-long int result;
-printf("Podaj n:\n");
-scanf("%ld", &n);
-result = 1;
-
-
-while (n>1){
-result *=n;
-n--;
+int fact(int n){
+    if (n>1)
+    return n*fact(n-1);
+    if (n<=1)
+        return 1;
 }
 
-printf("n! = %ld\n", result);
+/* 
+int - 13!
+long - 20!
+unsigned long int - 20!
+float - do 13! poprawnie, na 34 kończy liczenie
+double - do 22! poprawnie, kończy liczenie na 170!
+long double - do 25! poprawnie, kończy liczenie na ok. 1750!
+*/
 
-return 0;
+int main(){
+    int x;
+    printf("Podaj x:\n");
+    scanf("%d", &x);
+    printf("%d! = %d\n", x, fact(x));
+    return 0; 
 }
