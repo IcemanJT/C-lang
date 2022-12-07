@@ -1,11 +1,30 @@
 #include <stdio.h>
 
+
+/* rekurencja */
+
+
 int fact(int n){
     if (n>1)
-        return n*fact(n-1);
+    return n*fact(n-1);
     if (n<=1)
         return 1;
 }
+
+
+/* iteracja */
+
+/*
+int fact(int n){
+    int result = 1;
+    for(int i=n; i>0;i--){
+        result*=i;
+    }
+
+    return result;
+}
+*/
+
 
 /* 
 int - 13!
