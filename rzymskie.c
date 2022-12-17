@@ -2,6 +2,8 @@
 #include <string.h>
 
 #define MAX_LEN 255
+#define ASCII_R 82
+#define ASCII_D 68
 
 int value(char r)
 {
@@ -69,19 +71,19 @@ int Roman2D(char str[])
 
 int main()
 {
-    char op;
-    int x;
+    char flag;
+    int x, op;
     char t[MAX_LEN]={0};
 
     printf("\nDecimal to Roman ---> D\n");
     printf("Roman to Decimal ---> R\n");
     printf("Operation: ");
-    scanf("%c", &op);
-    int flag = op;
+    scanf("%c", &flag);
+    op = flag;
 
 
 
-    if (flag==68){
+    if (op==ASCII_D){
     printf("\nDecimal number to convert: ");
     scanf("%d", &x);
 
@@ -90,7 +92,7 @@ int main()
     }
 
 
-    if (flag==82){
+    if (op==ASCII_R){
     printf("\nRoman number to convert: ");
     scanf("%s", t);
 
@@ -98,7 +100,7 @@ int main()
     }
 
     
-    if (flag!=68 && flag != 82)
+    if (op!=ASCII_D && op!=ASCII_R)
         printf("Podano bledne instrukcje.");
     
 
