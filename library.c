@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 #define MAX_LEN 20 // max chars for names, surnames, titles... etc.
 #define MAX_BORROW 2 // max books you can borrow at a time
-#define MAX_PEOPLE 20 // max people in data base
+#define MAX_PEOPLE 2 // max people in data base
 #define MAX_BOOKS 10 // max books person can have in records
 
 // making sure every id is unique
@@ -48,14 +50,32 @@ int ElementCheck(int arr[], int x)
     return isElementPresent;
 }
 
-void AddPerson(Library people[])
+int IsDigits(char text[])
 {
+    for (int i=0; i<strlen(text); i++)
+    {
+        if (isdigit(text[i])==0)
+        return 0;
+    }
+
+    return 1;
+}
+
+int CreatId()
+{
+    char temp[20];
     int id, i;
-    Library person;
 
     printf("ID should be a digit.\n");
     printf("ID to creat: ");
-    scanf("%d", &id);
+    scanf("%s", temp);
+    while(IsDigits(temp)==0)
+    {
+        printf("ID should be a digit.\n");
+        printf("New ID: ");
+        scanf("%s", temp);
+    }
+    id = atol(temp);
     for (i=0; i<n; i++)
     {
         if (id_check[i]==id)
@@ -68,6 +88,45 @@ void AddPerson(Library people[])
             }
         }
     }
+    return id;
+}
+
+int IDValidate()
+{
+    char temp[20];
+    int id, temp2;
+
+    scanf("%s", temp);
+    while(IsDigits(temp)==0)
+    {
+        printf("ID should be a digit.\n");
+        printf("ID: ");
+        scanf("%s", temp);
+    }
+    temp2 = atol(temp);
+    while (ElementCheck(id_check ,temp2)==0 || IsDigits(temp)==0)
+    {
+        printf("ID doesnt exist.\n");
+        printf("ID: ");
+        scanf("%s", temp);
+        temp2 = atol(temp);
+    }
+    id = temp2;
+    return id;
+}
+
+void AddPerson(Library people[])
+{   
+    if (n >= MAX_PEOPLE)
+    {
+        printf("You cant add more people.\n");
+    }
+    else
+    {
+    int id;
+    Library person;
+
+    id = CreatId();
     id_check[n]=id;
     person.id = id;
 
@@ -83,6 +142,7 @@ void AddPerson(Library people[])
     people[n]=person;
 
     n++;
+    }
 }
 
 void BorrowBook(Library people[])
@@ -92,13 +152,7 @@ void BorrowBook(Library people[])
     book book1;
 
     printf("ID of person borrowing a book: ");
-    scanf("%d", &id);
-    while (ElementCheck(id_check ,id)==0)
-    {
-        printf("ID doesnt exist.\n");
-        printf("ID of person borrowing a book: ");
-        scanf("%d", &id);
-    }
+    id = IDValidate();
     for (int i =0; i < n; i++)
     {
         person = people[i];
@@ -142,13 +196,7 @@ void ReturnBook(Library people[])
     book book1;
 
     printf("ID of person returning a book: ");
-    scanf("%d", &id);
-    while (ElementCheck(id_check ,id)==0)
-    {
-        printf("ID doesnt exist.\n");
-        printf("ID of person returning a book: ");
-        scanf("%d", &id);
-    }
+    id = IDValidate();
 
     printf("Title of a book to return: ");
     scanf("%s", tit);
@@ -193,19 +241,14 @@ void DisplayPerson(Library people[])
     book book1;
 
     printf("ID of person to display: ");
-    scanf("%d", &id);
-    while (ElementCheck(id_check ,id)==0)
-    {
-        printf("ID doesnt exist.\n");
-        printf("ID of person to display: ");
-        scanf("%d", &id);
-    }
+    id = IDValidate();
     for (int i =0; i < n; i++)
     {
         person = people[i];
         if (person.id==id)
         {
         printf("\nID: %d, Name: %s, Surname: %s\n", person.id, person.name, person.surname);
+        printf("\nOne person can borrow %d books at a time.\n\n", MAX_BORROW);
         printf("Borrowed books:\n");
         printf("-----\n");
         for (int j =0; j<person.count_books; j++)
