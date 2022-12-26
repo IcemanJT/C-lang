@@ -10,7 +10,9 @@
 
 // making sure every id is unique
 int id_check[MAX_PEOPLE];
+char title_check[MAX_PEOPLE*MAX_BOOKS][MAX_LEN];
 int n=0;
+int x=0;
 
 typedef struct
 {
@@ -63,28 +65,32 @@ int IsDigits(char text[])
 
 int CreatId()
 {
-    char temp[20];
+    char temp[MAX_LEN];
     int id, i;
 
     printf("ID should be a digit.\n");
     printf("ID to creat: ");
-    scanf("%s", temp);
+    fgets(temp, 20, stdin);
+    temp[strcspn(temp, "\n")] = 0;
     while(IsDigits(temp)==0)
     {
         printf("ID should be a digit.\n");
         printf("New ID: ");
-        scanf("%s", temp);
+        fgets(temp, 20, stdin);
+        temp[strcspn(temp, "\n")] = 0;
     }
     id = atol(temp);
     for (i=0; i<n; i++)
     {
         if (id_check[i]==id)
         {
-            while (id_check[i]==id)
+            while (id_check[i]==id || IsDigits(temp)==0)
             {
                 printf("Invalid ID.\n");
                 printf("New ID: ");
-                scanf("%d", &id);
+                fgets(temp, 20, stdin);
+                temp[strcspn(temp, "\n")] = 0;
+                id = atol(temp);
             }
         }
     }
@@ -93,22 +99,25 @@ int CreatId()
 
 int IDValidate()
 {
-    char temp[20];
+    char temp[MAX_LEN];
     int id, temp2;
 
-    scanf("%s", temp);
+    fgets(temp, MAX_LEN, stdin);
+    temp[strcspn(temp, "\n")] = 0;
     while(IsDigits(temp)==0)
     {
         printf("ID should be a digit.\n");
         printf("ID: ");
-        scanf("%s", temp);
+        fgets(temp, MAX_LEN, stdin);
+        temp[strcspn(temp, "\n")] = 0;
     }
     temp2 = atol(temp);
     while (ElementCheck(id_check ,temp2)==0 || IsDigits(temp)==0)
     {
         printf("ID doesnt exist.\n");
         printf("ID: ");
-        scanf("%s", temp);
+        fgets(temp, MAX_LEN, stdin);
+        temp[strcspn(temp, "\n")] = 0;
         temp2 = atol(temp);
     }
     id = temp2;
@@ -131,10 +140,12 @@ void AddPerson(Library people[])
     person.id = id;
 
     printf("Name: ");
-    scanf("%s", person.name);
+    fgets(person.name, MAX_LEN, stdin);
+    person.name[strcspn(person.name, "\n")] = 0;
 
     printf("Surname: ");
-    scanf("%s", person.surname);
+    fgets(person.surname, MAX_LEN, stdin);
+    person.surname[strcspn(person.surname, "\n")] = 0;
 
     person.count_books = 0;
     person.borrowed = 0;
@@ -170,14 +181,22 @@ void BorrowBook(Library people[])
             person.borrowed +=1;
             
 
+
+
             printf("Title: ");
-            scanf("%s", book1.title);
+            fgets(book1.title, MAX_LEN, stdin);
+            book1.title[strcspn(book1.title, "\n")] = 0;
+            strcpy(title_check[x],book1.title);
+            x++;
 
             printf("Author: ");
-            scanf("%s", book1.author);
+            fgets(book1.author, MAX_LEN, stdin);
+            book1.author[strcspn(book1.author, "\n")] = 0;
 
             printf("Borrow date: ");
-            scanf("%s", book1.borrow_date);
+            fgets(book1.borrow_date, MAX_LEN, stdin);
+            book1.borrow_date[strcspn(book1.borrow_date, "\n")] = 0;
+
             book1.status = 0;
             
             person.book[(person.count_books-1)]=book1;
@@ -188,10 +207,20 @@ void BorrowBook(Library people[])
     printf("\n");
 }
 
+int ValidTitle(char tit[])
+{
+    for (int i =0; i<x;i++)
+    {
+        if (strcmp(tit,title_check[i])==0)
+            return 0;
+    }
+    return 1;
+}
+
 void ReturnBook(Library people[])
 {
     int id;
-    char tit[MAX_LEN];
+    char tit[MAX_LEN]={0};
     Library person;
     book book1;
 
@@ -199,32 +228,39 @@ void ReturnBook(Library people[])
     id = IDValidate();
 
     printf("Title of a book to return: ");
-    scanf("%s", tit);
-
+    fgets(tit, MAX_LEN, stdin);
+    tit[strcspn(tit, "\n")] = 0;
+    while (ValidTitle(tit))
+    {   
+        printf("Wrong title.\n");
+        fgets(tit, MAX_LEN, stdin);
+        tit[strcspn(tit, "\n")] = 0;
+    }
     for (int i =0; i < n; i++)
     {
         person = people[i];
 
         if (person.id==id)
         {
-            for (int j = 0; j<MAX_BORROW; j++)
+            for (int j = 0; j<person.count_books; j++)
             {
                 book1 = person.book[j];
-                if (strcmp(book1.title, tit)==0)
+                if (book1.status == 1)
+                {
+                    printf("Book already returned.\n");
+                    break;
+                }
+                if (strncmp(book1.title, tit, strlen(book1.title))==0)
                 {
                     book1.status = 1;
                     person.borrowed -=1;
 
                     printf("Return date: ");
-                    scanf("%s", book1.return_date);
+                    fgets(book1.return_date, MAX_LEN, stdin);
+                    book1.return_date[strcspn(book1.return_date, "\n")] = 0;
 
                     person.book[j]=book1;
                     people[i]=person;
-                    break;
-                }
-                else
-                {
-                    printf("Wrong title.\n");
                     break;
                 }
             }
@@ -276,67 +312,67 @@ void DisplayInfo()
     printf("To borrow book --> Borrow\n");
     printf("To return a book --> Return\n");
     printf("To display account information --> Info\n");
+    printf("To exit program --> Exit\n");
+}
+
+void DisplayMenu()
+{
+    printf("\n---MENU---\n");
+    DisplayInfo();
+    printf("Task: ");
 }
 
 int main()
 {
     Library people[MAX_PEOPLE];
-    char buffer[MAX_LEN];
+    char buffer[MAX_LEN]={0};
 
-    char add[4]={'A','d','d',0};
+    char add[20]={'A','d','d',0};
     char borrow[7]={'B','o','r','r','o','w',0};
     char ret[7]={'R','e','t','u','r','n',0};
     char info[5]={'I','n','f','o',0};
-
+    char exit_loop[5]={'E','x','i','t',0};
 
     printf("You can add %d people.\n", MAX_PEOPLE);
     printf("One person can borrow %d books at a time.\n", MAX_BORROW);
 
+    DisplayMenu();
 
-    printf("\n---MENU---\n");
-    DisplayInfo();
-    printf("Task: ");
-
-    while (scanf("%s", buffer) != EOF)
+    while (fgets(buffer, MAX_LEN, stdin))
     {
+        buffer[strcspn(buffer, "\n")] = 0;
         if(strcmp(buffer,add)==0)
         {
             AddPerson(people);
-            printf("\n---MENU---\n");
-            DisplayInfo();
-            printf("Task: ");
+            DisplayMenu();
             continue;
         }
         if(strcmp(buffer,borrow)==0)
         {
             BorrowBook(people);
-            printf("\n---MENU---\n");
-            DisplayInfo();
-            printf("Task: ");
+            DisplayMenu();
             continue;
         }
         if(strcmp(buffer,ret)==0)
         {
             ReturnBook(people);
-            printf("\n---MENU---\n");
-            DisplayInfo();
-            printf("Task: ");
+            DisplayMenu();
             continue;
         }
         if(strcmp(buffer,info)==0)
         {
             DisplayPerson(people);
-            printf("\n---MENU---\n");
-            DisplayInfo();
-            printf("Task: ");
+            DisplayMenu();
             continue;
+        }
+        if(strcmp(buffer, exit_loop)==0)
+        {
+            break;
         }
         else
         {
             printf("Invalid command.\n");
-            printf("\n---MENU---\n");
-            DisplayInfo();
-            printf("Task: ");
+            DisplayMenu();
             continue;
         }
     }
