@@ -32,6 +32,7 @@ typedef struct
     char name[MAX_LEN];
     char surname[MAX_LEN];
     int count_books;
+    char titles[MAX_BOOKS][MAX_LEN];
     int borrowed;
     book book[MAX_BOOKS];
 
@@ -177,16 +178,12 @@ void BorrowBook(Library people[])
             }
             else
             {
-            person.count_books += 1;
-            person.borrowed +=1;
             
-
-
-
             printf("Title: ");
             fgets(book1.title, MAX_LEN, stdin);
             book1.title[strcspn(book1.title, "\n")] = 0;
             strcpy(title_check[x],book1.title);
+            strcpy(person.titles[person.count_books],book1.title);
             x++;
 
             printf("Author: ");
@@ -198,8 +195,11 @@ void BorrowBook(Library people[])
             book1.borrow_date[strcspn(book1.borrow_date, "\n")] = 0;
 
             book1.status = 0;
-            
-            person.book[(person.count_books-1)]=book1;
+
+            person.book[person.count_books]=book1;
+            person.count_books += 1;
+            person.borrowed +=1;
+
             people[i]= person;
             }
         }
@@ -233,6 +233,7 @@ void ReturnBook(Library people[])
     while (ValidTitle(tit))
     {   
         printf("Wrong title.\n");
+        printf("Title: ");
         fgets(tit, MAX_LEN, stdin);
         tit[strcspn(tit, "\n")] = 0;
     }
@@ -242,6 +243,18 @@ void ReturnBook(Library people[])
 
         if (person.id==id)
         {
+            int flag = 0;
+            for (int k =0; k<person.count_books; k++)
+            {
+                if(strcmp(tit, person.titles[k])==0)
+                    flag =1;
+            }
+            if (flag == 0)
+                {
+                    printf("Person didnt borrow this book.\n");
+                    break;
+                }
+
             for (int j = 0; j<person.count_books; j++)
             {
                 book1 = person.book[j];
@@ -308,11 +321,11 @@ void DisplayPerson(Library people[])
 
 void DisplayInfo()
 {
-    printf("To creat an account --> Add\n");
-    printf("To borrow book --> Borrow\n");
-    printf("To return a book --> Return\n");
-    printf("To display account information --> Info\n");
-    printf("To exit program --> Exit\n");
+    printf("To creat an account --> add\n");
+    printf("To borrow book --> borrow\n");
+    printf("To return a book --> return\n");
+    printf("To display account information --> info\n");
+    printf("To exit program --> exit\n");
 }
 
 void DisplayMenu()
@@ -327,11 +340,11 @@ int main()
     Library people[MAX_PEOPLE];
     char buffer[MAX_LEN]={0};
 
-    char add[20]={'A','d','d',0};
-    char borrow[7]={'B','o','r','r','o','w',0};
-    char ret[7]={'R','e','t','u','r','n',0};
-    char info[5]={'I','n','f','o',0};
-    char exit_loop[5]={'E','x','i','t',0};
+    char add[20]={'a','d','d',0};
+    char borrow[7]={'b','o','r','r','o','w',0};
+    char ret[7]={'r','e','t','u','r','n',0};
+    char info[5]={'i','n','f','o',0};
+    char exit_loop[5]={'e','x','i','t',0};
 
     printf("You can add %d people.\n", MAX_PEOPLE);
     printf("One person can borrow %d books at a time.\n", MAX_BORROW);
