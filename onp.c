@@ -102,8 +102,8 @@ void Prog(char text[])
             }
             if (c == '-')
             {
-                x = pop();
                 y = pop();
+                x = pop();
                 push(x - y);
                 
             }
@@ -115,8 +115,8 @@ void Prog(char text[])
             }
             if (c == '/')
             {
-                x = pop();
                 y = pop();
+                x = pop();
                 push(x / y);
             }
             if (c == '=')
