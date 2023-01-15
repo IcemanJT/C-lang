@@ -9,6 +9,8 @@ double S[MAX_LEN] = {0};
 int count = 0; // number of elements in container
 int *ptr;
 
+
+// version extended with powering in integrating program
 char IsOperand(char c)
 {
     if (c == '+' || c == '-' || c == '*' || c == '/' || c == '=')
@@ -134,6 +136,7 @@ int main()
     char text[MAX_LEN];
 
     printf("Separate every number and operand with space.\n");
+    printf("End expression with '='.\n");
     printf("Possible operations: +, -, *, /.\n\n");
 
 
